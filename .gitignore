@@ -1,0 +1,30 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+.vs/
+**/*.csproj.user
+**/appsettings.Development.json
+
+# Node / Frontend
+**/node_modules/
+**/dist/
+**/.vite/
+**/.cache/
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(docker run *)",
+      "Bash(dotnet restore *)",
+      "PowerShell(Get-Command dotnet -ErrorAction SilentlyContinue; if \\(Test-Path \"C:\\\\Program Files\\\\dotnet\\\\dotnet.exe\"\\) { \"Found at C:\\\\Program Files\\\\dotnet\" } elseif \\(Test-Path \"$env:LOCALAPPDATA\\\\Microsoft\\\\dotnet\\\\dotnet.exe\"\\) { \"Found at LocalAppData\" } else { \"dotnet not found\" })",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet restore ECommerce.sln 2>&1 | Select-Object -Last 5)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet restore ECommerce.sln 2>&1 | Select-Object -Last 8)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet build ECommerce.sln -c Release --no-restore 2>&1 | Select-Object -Last 20)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet restore ECommerce.sln 2>&1 | Select-Object -Last 3; dotnet build ECommerce.sln -c Release --no-restore 2>&1 | Select-Object -Last 20)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet restore ECommerce.sln 2>&1 | Select-Object -Last 2; dotnet build ECommerce.sln -c Release --no-restore 2>&1 | Select-Object -Last 15)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet build ECommerce.sln -c Release 2>&1 | Select-Object -Last 15)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet build ECommerce.sln -c Release 2>&1 | Where-Object { $_ -match \"error|Error|FAILED|succeeded|warning CS\" } | Select-Object -Last 20)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet build ECommerce.sln -c Release 2>&1 | Where-Object { $_ -match \": error \" } | Select-Object -First 20)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet ef database update --project src/ECommerce.Persistence --startup-project src/ECommerce.API 2>&1 | Select-Object -Last 10)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; dotnet tool install --global dotnet-ef 2>&1 | Select-Object -Last 3)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; dotnet tool uninstall --global dotnet-ef; dotnet tool install --global dotnet-ef --version 8.0.11 2>&1 | Select-Object -Last 3)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet;$env:USERPROFILE\\\\.dotnet\\\\tools\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet-ef migrations add InitialCreate --project src/ECommerce.Persistence --startup-project src/ECommerce.API 2>&1 | Select-Object -Last 10)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet;$env:USERPROFILE\\\\.dotnet\\\\tools\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet-ef database update --project src/ECommerce.Persistence --startup-project src/ECommerce.API 2>&1 | Select-Object -Last 5)",
+      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\dotnet\"; cd \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\\\\src\\\\ECommerce.API\"; Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"`$env:PATH += ';C:\\\\Program Files\\\\dotnet'; dotnet run --launch-profile http\" -WindowStyle Normal)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5000/api/auth/login\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"test\",\"password\":\"test\"}' -UseBasicParsing -ErrorAction Stop; $r.StatusCode } catch { $_.Exception.Message })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5000/api/auth/login\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"admin@ecommerce.com\",\"password\":\"Admin@123456\"}' -UseBasicParsing -ErrorAction Stop; $r.Content } catch { $_.Exception.Response.StatusCode; $body = $_.Exception.Response.GetResponseStream\\(\\); $reader = New-Object System.IO.StreamReader\\($body\\); $reader.ReadToEnd\\(\\) })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5000/api/products\" -UseBasicParsing -ErrorAction Stop; \"OK: \" + $r.StatusCode } catch { $_.Exception.Message })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5000/swagger/v1/swagger.json\" -UseBasicParsing -ErrorAction Stop; \"OK\"; $r.Content.Substring\\(0,100\\) } catch { \"FAIL: \" + $_.Exception.Message })",
+      "PowerShell(New-Item -ItemType Directory -Path \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\\\\src\\\\ECommerce.API\\\\Properties\" -Force)",
+      "PowerShell(\"done\")"
+    ]
+  }
+}

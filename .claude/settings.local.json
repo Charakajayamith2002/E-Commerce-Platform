@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"C:\\\\Program Files\\\\dotnet\\\\dotnet.exe\" build --no-restore)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; Write-Host \"Port 5000 cleared\")",
+      "PowerShell(Start-Process -FilePath \"C:\\\\Program Files\\\\dotnet\\\\dotnet.exe\" -ArgumentList \"run\" -WorkingDirectory \"D:\\\\Projects\\\\E-Commerce Platform\\\\backend\\\\src\\\\ECommerce.API\" -WindowStyle Normal)",
+      "PowerShell(Start-Sleep -Seconds 8; try { $r = Invoke-WebRequest -Uri \"http://localhost:5000/api/categories\" -UseBasicParsing -TimeoutSec 5; Write-Host \"Categories API status: $\\($r.StatusCode\\)\"; $r.Content | ConvertFrom-Json | ConvertTo-Json -Depth 2 | Select-Object -First 5 } catch { Write-Host \"Not ready yet or error: $_\" })",
+      "PowerShell(Start-Sleep -Seconds 10; try { $r = Invoke-WebRequest -Uri \"http://localhost:5000/api/categories\" -UseBasicParsing -TimeoutSec 8; Write-Host \"Status: $\\($r.StatusCode\\)\"; \\($r.Content | ConvertFrom-Json\\).data | Select-Object -First 3 | ForEach-Object { Write-Host \"- $\\($_.name\\) \\(id: $\\($_.id\\)\\)\" } } catch { Write-Host \"Error: $_\" })",
+      "PowerShell(Stop-Process -Id 14388 -Force -ErrorAction SilentlyContinue; Get-NetTCPConnection -LocalPort 5000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; Write-Host \"Stopped\")",
+      "PowerShell(cd \"D:\\\\Projects\\\\E-Commerce Platform\\\\backend\\\\src\\\\ECommerce.API\"; & \"C:\\\\Program Files\\\\dotnet\\\\dotnet.exe\" build 2>&1 | Where-Object { $_ -match \"error\" } | Select-Object -First 10)",
+      "PowerShell(Stop-Process -Id 21648 -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; cd \"D:\\\\Projects\\\\E-Commerce Platform\\\\backend\\\\src\\\\ECommerce.API\"; & \"C:\\\\Program Files\\\\dotnet\\\\dotnet.exe\" build 2>&1 | Where-Object { $_ -match \"error CS|Build succeeded|0 Error\" } | Select-Object -Last 5)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 2; cd \"D:\\\\Projects\\\\E-Commerce Platform\\\\backend\\\\src\\\\ECommerce.API\"; & \"C:\\\\Program Files\\\\dotnet\\\\dotnet.exe\" build 2>&1 | Where-Object { $_ -match \"Build succeeded|error CS\" } | Select-Object -Last 3)",
+      "Bash(dotnet build *)",
+      "PowerShell(Stop-Process -Id 10888 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 1000; Set-Location \"d:\\\\Projects\\\\E-Commerce Platform\\\\backend\"; dotnet build src/ECommerce.API/ECommerce.API.csproj --no-restore -c Debug 2>&1 | Where-Object { $_ -match \"error CS|Build succeeded|FAILED\" })"
+    ]
+  }
+}

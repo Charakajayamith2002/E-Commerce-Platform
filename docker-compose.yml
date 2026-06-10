@@ -1,0 +1,97 @@
+version: '3.9'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ecommerce_sqlserver
+    environment:
+      SA_PASSWORD: ${DB_PASSWORD:-YourStrong@Password123}
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $${SA_PASSWORD} -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ecommerce_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: ecommerce_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ecommerce_net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ecommerce_backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=ECommerceDb;User Id=sa;Password=${DB_PASSWORD:-YourStrong@Password123};TrustServerCertificate=True;"
+      ConnectionStrings__Redis: "redis:6379"
+      JwtSettings__SecretKey: ${JWT_SECRET}
+      JwtSettings__Issuer: ${JWT_ISSUER:-ecommerce-api}
+      JwtSettings__Audience: ${JWT_AUDIENCE:-ecommerce-client}
+      JwtSettings__AccessTokenExpiryMinutes: ${JWT_ACCESS_EXPIRY:-60}
+      JwtSettings__RefreshTokenExpiryDays: ${JWT_REFRESH_EXPIRY:-7}
+      Cloudinary__CloudName: ${CLOUDINARY_CLOUD_NAME}
+      Cloudinary__ApiKey: ${CLOUDINARY_API_KEY}
+      Cloudinary__ApiSecret: ${CLOUDINARY_API_SECRET}
+      Stripe__SecretKey: ${STRIPE_SECRET_KEY}
+      Stripe__WebhookSecret: ${STRIPE_WEBHOOK_SECRET}
+      EmailSettings__Host: ${SMTP_HOST}
+      EmailSettings__Port: ${SMTP_PORT:-587}
+      EmailSettings__UserName: ${SMTP_USER}
+      EmailSettings__Password: ${SMTP_PASSWORD}
+      EmailSettings__FromAddress: ${SMTP_FROM}
+      EmailSettings__FromName: ${SMTP_FROM_NAME:-ECommerce Store}
+    ports:
+      - "5000:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ecommerce_net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_STRIPE_PUBLIC_KEY: ${STRIPE_PUBLIC_KEY}
+    container_name: ecommerce_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - ecommerce_net
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+  redis_data:
+
+networks:
+  ecommerce_net:
+    driver: bridge
